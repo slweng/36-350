@@ -23,13 +23,14 @@ model_select = function(covariates, responses, cutoff) {
   significant.cov = which(lm.pvalues <= cutoff) - 1
   
   # if no covariates are significant, return an empty vector
-  if (length(significant.cov) == 0) return(c())
-  # if only intercept is significant, return an empty vector
-  else if ((length(significant.cov) == 1 & significant.cov == 0)) return(c())
+  ifelse(length(significant.cov) == 0, return(c()),
+         ifelse((length(significant.cov) == 1 & significant.cov == 0), return(c()), TRUE)) 
   
   # otherwise...if intercept is significant, keep names
-  if (significant.cov[1] == 0) sig.names = names(significant.cov)
-  else sig.names = c("(Intercept)", names(significant.cov)) # add intercept name if it doesn't exist
+  ifelse((significant.cov[1] == 0), # test
+         (sig.names = names(significant.cov)), # if TRUE
+         (sig.names = c("(Intercept)", names(significant.cov))) # if FALSE
+         )
     
   # run a linear regression using only significant covariates
   significant.cov = significant.cov[which(significant.cov != 0)] # only keep covariates, not intercept
