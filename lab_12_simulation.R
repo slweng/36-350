@@ -40,3 +40,18 @@ model_select = function(covariates, responses, cutoff) {
   
   return(p.values)
 }
+
+run_simulation = function(n_trials, n, p, cutoff) {
+  # collecting all pvalues from different trials, initialize vector
+  p.values = c()
+  
+  # calculate pvalues
+  for (i in 1:n_trials) {
+    dat = generate_data(n, p)
+    pval = model_select(dat[[1]], dat[[2]], cutoff)
+    p.values = c(p.values, pval)
+  }
+  
+  # create histogram of p-values
+  hist(p.values)
+}
