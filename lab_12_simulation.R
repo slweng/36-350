@@ -52,6 +52,27 @@ run_simulation = function(n_trials, n, p, cutoff) {
     p.values = c(p.values, pval)
   }
   
-  # create histogram of p-values
-  hist(p.values)
+  # save p.values to a file
+  # file name is "sim_ntrials_n_p_cutoff"
+  save(p.values,
+       file = paste("sim", 
+                    as.character(n_trials), as.character(n), as.character(p), as.character(cutoff), ".RData",
+                    sep = "_"))
+}
+
+make_plot = function(datapath) {
+  # loads vector of pvalues: "p.values"
+  load(datapath)
+  # set local environment variable pvalues to ensure function does not plot global variable p.values
+  pvalues = p.values
+  # set variable values
+  variables = strsplit(datapath, split = "_")[[1]]
+  variables = variables[-c(1,length(variables))] # removes first and last items: "sim" and ".RData"
+  n_trials = variables[1]
+  n = variables[2]
+  p = variables[3]
+  cutoff = variables[4]
+  
+  # plot histogram
+  hist(pvalues, main = paste(n_trials, " Simulations for n = ", n, ", p = ", p, sep = ""))
 }
